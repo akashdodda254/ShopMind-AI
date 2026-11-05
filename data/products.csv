@@ -1,0 +1,21 @@
+name,brand,category,price,rating,rating_count,description,specifications,stock
+ASUS Vivobook 15,ASUS,Laptop,55000,4.3,250,Everyday laptop for students and professionals,16GB RAM;512GB SSD;Intel Core i5,20
+ASUS TUF Gaming F15,ASUS,Laptop,72000,4.5,420,Gaming laptop with dedicated graphics,16GB RAM;512GB SSD;RTX 3050,12
+HP Pavilion 15,HP,Laptop,62000,4.2,310,Versatile laptop for work and college,16GB RAM;512GB SSD;Intel Core i5,15
+Lenovo IdeaPad Slim 5,Lenovo,Laptop,68000,4.4,280,Thin laptop for productivity,16GB RAM;512GB SSD;AMD Ryzen 7,18
+Dell Inspiron 15,Dell,Laptop,59000,4.1,190,Reliable everyday laptop,8GB RAM;512GB SSD;Intel Core i5,10
+Apple MacBook Air M3,Apple,Laptop,109900,4.8,850,Lightweight laptop for productivity,16GB RAM;512GB SSD;Apple M3,8
+Acer Nitro V,Acer,Laptop,75000,4.4,350,Performance laptop for gaming,16GB RAM;512GB SSD;RTX 4050,9
+HP Victus 15,HP,Laptop,78000,4.5,410,Gaming laptop with high refresh rate display,16GB RAM;512GB SSD;RTX 4050,11
+Samsung Galaxy S24,Samsung,Smartphone,65000,4.6,900,Premium Android smartphone,8GB RAM;256GB Storage;AMOLED,25
+Apple iPhone 15,Apple,Smartphone,69900,4.7,1200,Premium smartphone with advanced camera,128GB Storage;A16 Bionic,14
+OnePlus 13,OnePlus,Smartphone,69999,4.6,700,Flagship smartphone with fast performance,12GB RAM;256GB Storage;Snapdragon 8 Elite,17
+Google Pixel 9,Google,Smartphone,79999,4.5,550,Smartphone with advanced computational photography,12GB RAM;256GB Storage;Google Tensor,8
+Nothing Phone 3a,Nothing,Smartphone,24999,4.3,320,Mid-range smartphone with distinctive design,8GB RAM;128GB Storage;AMOLED,30
+Redmi Note 14 Pro,Redmi,Smartphone,24999,4.2,450,Affordable smartphone with versatile cameras,8GB RAM;256GB Storage;AMOLED,35
+Sony WH-1000XM5,Sony,Headphones,24990,4.7,1500,Premium noise cancelling headphones,Wireless;ANC;30-hour battery,16
+Bose QuietComfort Ultra,Bose,Headphones,35900,4.8,950,Premium headphones with noise cancellation,Wireless;ANC;Spatial Audio,9
+JBL Tune 770NC,JBL,Headphones,7999,4.3,600,Affordable noise cancelling headphones,Wireless;ANC;70-hour battery,28
+Apple AirPods Pro 2,Apple,Headphones,24900,4.7,1100,Wireless earbuds with active noise cancellation,Wireless;ANC;Spatial Audio,20
+Samsung Galaxy Watch 7,Samsung,Smartwatch,29999,4.4,450,Smartwatch with health and fitness tracking,AMOLED;GPS;Heart Rate Monitoring,13
+Apple Watch Series 10,Apple,Smartwatch,46900,4.7,800,Smartwatch with advanced fitness tracking,OLED;GPS;ECG,7
