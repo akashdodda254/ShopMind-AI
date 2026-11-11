@@ -8,7 +8,7 @@ import pandas as pd
 
 from database.db import (
     initialize_database,
-    add_products,
+    replace_products,
     get_all_products
 )
 
@@ -107,14 +107,12 @@ def validate_data(dataframe):
 # --------------------------------------------------
 
 def insert_products(dataframe):
-
+    
     products = dataframe.to_dict(orient="records")
 
-    total_inserted = add_products(products)
+    total_inserted = replace_products(products)
 
-    print(f"Successfully inserted {total_inserted} products.")
-
-
+    print(f"Successfully loaded {total_inserted} products.")
 # --------------------------------------------------
 # DISPLAY DATABASE SUMMARY
 # --------------------------------------------------

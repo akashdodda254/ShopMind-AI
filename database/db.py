@@ -252,7 +252,70 @@ def add_products(products):
     finally:
         connection.close()
 
+# --------------------------------------------------
+# REPLACE PRODUCT CATALOGUE
+# --------------------------------------------------
 
+def replace_products(products):
+    """
+    Replace the existing product catalogue.
+
+    The deletion and insertion happen in one transaction.
+    If insertion fails, the previous catalogue is preserved.
+    """
+
+    connection = get_connection()
+
+    try:
+        cursor = connection.cursor()
+
+        # Remove existing products
+        cursor.execute("DELETE FROM products")
+
+        # Insert the new catalogue
+        query = """
+            INSERT INTO products (
+                name,
+                brand,
+                category,
+                price,
+                rating,
+                rating_count,
+                description,
+                specifications,
+                stock
+            )
+            VALUES (
+                :name,
+                :brand,
+                :category,
+                :price,
+                :rating,
+                :rating_count,
+                :description,
+                :specifications,
+                :stock
+            )
+        """
+
+        cursor.executemany(query, products)
+
+        connection.commit()
+
+        print(
+            f"Product catalogue replaced successfully! "
+            f"{cursor.rowcount} products loaded."
+        )
+
+        return cursor.rowcount
+
+    except Exception:
+
+        connection.rollback()
+        raise
+
+    finally:
+        connection.close()
 # --------------------------------------------------
 # GET ALL PRODUCTS
 # --------------------------------------------------
