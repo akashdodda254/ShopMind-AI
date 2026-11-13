@@ -1,0 +1,9 @@
+google-genai
+python-dotenv
+pandas
+numpy
+scikit-learn
+streamlit
+fastapi
+uvicorn
+sentence-transformers

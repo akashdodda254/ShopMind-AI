@@ -9,81 +9,76 @@ class ShopMindOrchestrator:
 
     def __init__(self):
 
-        print("\nInitializing ShopMind AI...\n")
-
         self.intent_agent = IntentAgent()
         self.search_agent = SearchAgent()
         self.recommendation_agent = RecommendationAgent()
         self.comparison_agent = ComparisonAgent()
         self.response_agent = ResponseAgent()
 
-        print("\nShopMind is ready!\n")
+        print("ShopMind initialized successfully!")
 
-    def process_request(self, message):
+    def process_request_data(
+        self,
+        message,
+        category_override=None,
+        budget_override=None
+    ):
 
         message = message.strip()
 
         if not message:
-            return "Please enter a shopping request."
+            return {"type": "text", "response": "Please enter a shopping request."}
 
         if message.lower() in ["hi", "hello", "hey"]:
-            return "Hello! Welcome to ShopMind. What are you shopping for today?"
+            return {
+                "type": "text",
+                "response": "Hello! Welcome to ShopMind. What are you shopping for today?"
+            }
 
-        if message.lower() in ["bye", "exit", "quit"]:
-            return "Thank you for shopping with ShopMind!"
-
-        # 1. Understand the request using Gemini.
-        try:
-            requirements = self.intent_agent.understand(message)
-        except Exception as error:
-            print("Intent Agent error:", error)
-            return "I'm having trouble understanding your request. Please try again."
+        requirements = self.intent_agent.understand(message)
 
         if requirements.get("intent") == "unknown":
-            return "I couldn't understand your request. Please describe the product you need."
+            return {
+                "type": "text",
+                "response": "I couldn't understand your request. Please try again."
+            }
 
-        # 2. Search the product database.
-        search_results = self.search_agent.search(requirements)
+        if category_override:
+            requirements["category"] = category_override
 
-        if not search_results:
-            return "No matching products found. Try changing your budget or preferences."
+        if budget_override is not None:
+            requirements["max_price"] = budget_override
 
-        # 3. Rank matching products.
-        recommendations = self.recommendation_agent.engine.rank_products(
-            search_results
+        products = self.search_agent.search(requirements)
+
+        if not products:
+            return {
+                "type": "products",
+                "products": [],
+                "response": "No matching products found. Try changing your filters."
+            }
+
+        products = self.recommendation_agent.engine.rank_products(
+            products
         )[:5]
 
-        # 4. Compare when requested.
         if requirements.get("intent") == "comparison":
-            return self.comparison_agent.compare(recommendations)
+            return {
+                "type": "comparison",
+                "products": products,
+                "response": self.comparison_agent.compare(products)
+            }
 
-        # 5. Generate the final response using Gemini.
-        try:
-            return self.response_agent.generate_response(recommendations)
-        except Exception as error:
-            print("Response Agent error:", error)
-            return self.response_agent.format_fallback(recommendations)
+        response = self.response_agent.generate_response(products)
 
+        return {
+            "type": "products",
+            "products": products,
+            "response": response
+        }
 
-if __name__ == "__main__":
+    def process_request(self, message):
 
-    shopmind = ShopMindOrchestrator()
+        result = self.process_request_data(message)
 
-    print("===================================")
-    print("       SHOPMIND AI ASSISTANT")
-    print("===================================")
-    print("Type 'exit' to quit.\n")
-
-    while True:
-
-        message = input("You: ").strip()
-
-        if message.lower() in ["exit", "quit", "bye"]:
-            print("\nShopMind: Thank you for shopping!")
-            break
-
-        response = shopmind.process_request(message)
-
-        print("\nShopMind:\n")
-        print(response)
-        print()
+        return result["response"]
