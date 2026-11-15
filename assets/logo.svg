@@ -1,0 +1,16 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 100">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#A855F7"/>
+      <stop offset="100%" stop-color="#38BDF8"/>
+    </linearGradient>
+  </defs>
+  <rect x="8" y="10" width="78" height="78" rx="22" fill="url(#g)"/>
+  <path d="M29 35h8l7 30h26l7-22H42" fill="none"
+        stroke="white" stroke-width="4" stroke-linecap="round"
+        stroke-linejoin="round"/>
+  <circle cx="49" cy="73" r="3.5" fill="white"/>
+  <circle cx="68" cy="73" r="3.5" fill="white"/>
+  <text x="105" y="66" font-family="Arial, sans-serif"
+        font-size="43" font-weight="700" fill="white">ShopMind</text>
+</svg>

@@ -2,12 +2,13 @@ import streamlit as st
 from database.wishlist import add_to_wishlist
 from database.cart import add_to_cart
 
+
 def render_product_cards(products):
-    
+
     if not products:
         return
 
-    st.subheader("🛍️ Recommended Products")
+    st.markdown("### 🛍️ Recommended Products")
 
     columns = st.columns(2)
 
@@ -19,24 +20,78 @@ def render_product_cards(products):
 
             with st.container(border=True):
 
+                # Product name
+                st.markdown(
+                    f"""
+                    <div style="
+                        color: #6C63FF;
+                        font-size: 12px;
+                        font-weight: 700;
+                        letter-spacing: 1px;
+                        text-transform: uppercase;
+                    ">
+                        {product.get('category', 'Product')}
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
+
                 st.markdown(f"### {product['name']}")
 
-                st.write(f"**Brand:** {product['brand']}")
-                st.write(f"**Category:** {product['category']}")
-                st.write(f"**Price:** ₹{product['price']:,.0f}")
-                st.write(f"**Rating:** ⭐ {product['rating']}/5")
+                st.caption(f"Brand: {product.get('brand', 'N/A')}")
 
-                st.write(product.get("description", ""))
+                # Price and rating
+                price_col, rating_col = st.columns(2)
 
+                with price_col:
+                    st.markdown(
+                        f"""
+                        <div style="
+                            font-size: 25px;
+                            font-weight: 800;
+                            color: #5548E8;
+                            padding: 5px 0;
+                        ">
+                            ₹{product['price']:,.0f}
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
+                    )
+
+                with rating_col:
+                    st.metric(
+                        "Rating",
+                        f"⭐ {product.get('rating', 0)}/5",
+                    )
+
+                # Description
+                description = product.get(
+                    "description",
+                    "No description available."
+                )
+
+                st.write(description)
+
+                # Stock indicator
+                stock = product.get("stock", 0)
+
+                if stock > 5:
+                    st.success(f"● In Stock ({stock} available)")
+                elif stock > 0:
+                    st.warning(f"● Only {stock} left")
+                else:
+                    st.error("● Out of Stock")
+
+                # Customer actions
                 if current_user:
+
+                    st.divider()
 
                     if st.button(
                         "❤️ Add to Wishlist",
                         key=f"chat_wishlist_{product['id']}",
                         use_container_width=True,
                     ):
-
-                        from database.wishlist import add_to_wishlist
 
                         success, message = add_to_wishlist(
                             current_user["id"],
@@ -48,30 +103,33 @@ def render_product_cards(products):
                         else:
                             st.info(message)
 
-                    quantity = st.number_input(
-                        "Quantity",
-                        min_value=1,
-                        max_value=max(1, product["stock"]),
-                        value=1,
-                        key=f"chat_cart_quantity_{product['id']}",
-                    )
+                    if stock > 0:
 
-                    if st.button(
-                        "🛒 Add to Cart",
-                        key=f"chat_cart_{product['id']}",
-                        use_container_width=True,
-                    ):
-
-                        success, message = add_to_cart(
-                            current_user["id"],
-                            product["id"],
-                            quantity,
+                        quantity = st.number_input(
+                            "Quantity",
+                            min_value=1,
+                            max_value=max(1, stock),
+                            value=1,
+                            key=f"chat_cart_quantity_{product['id']}",
                         )
 
-                        if success:
-                            st.success(message)
-                        else:
-                            st.warning(message)
+                        if st.button(
+                            "🛒 Add to Cart",
+                            key=f"chat_cart_{product['id']}",
+                            use_container_width=True,
+                        ):
+
+                            success, message = add_to_cart(
+                                current_user["id"],
+                                product["id"],
+                                quantity,
+                            )
+
+                            if success:
+                                st.success(message)
+                            else:
+                                st.warning(message)
+
 
 def render_chat_history():
 
@@ -134,6 +192,8 @@ def process_chat_request(shopmind, user_input, category, budget):
                 # Save shopping history
                 from database.history import record_search
 
+                current_user = st.session_state.get("current_user")
+
                 record_search(
                     query=user_input,
                     category=(
@@ -143,8 +203,10 @@ def process_chat_request(shopmind, user_input, category, budget):
                     ),
                     budget=budget if budget < 150000 else None,
                     products=products,
-                    user_id=str(
-                        st.session_state.current_user["id"]
+                    user_id=(
+                        str(current_user["id"])
+                        if current_user
+                        else "guest"
                     )
                 )
 

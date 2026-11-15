@@ -1,0 +1,180 @@
+﻿/* =========================================
+   SHOPMIND AI — HYBRID THEME
+   Dark sidebar + Premium light dashboard
+========================================= */
+
+:root {
+    --primary: #6C63FF;
+    --primary-dark: #5548E8;
+    --secondary: #38BDF8;
+    --background: #F5F7FC;
+    --surface: #FFFFFF;
+    --text: #20243A;
+    --muted: #7B8298;
+    --border: #E8EAF2;
+    --sidebar: #171A2E;
+}
+
+/* Main application */
+
+.stApp {
+    background: var(--background);
+    color: var(--text);
+    font-family: "Inter", "Segoe UI", sans-serif;
+}
+
+.block-container {
+    max-width: 1450px;
+    padding-top: 2rem;
+    padding-bottom: 3rem;
+}
+
+/* Sidebar */
+
+[data-testid="stSidebar"] {
+    background: var(--sidebar);
+    border-right: 1px solid rgba(255,255,255,0.08);
+}
+
+[data-testid="stSidebar"] > div:first-child {
+    background: var(--sidebar);
+}
+
+[data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p,
+[data-testid="stSidebar"] label,
+[data-testid="stSidebar"] h1,
+[data-testid="stSidebar"] h2,
+[data-testid="stSidebar"] h3 {
+    color: #F3F4FA !important;
+}
+
+[data-testid="stSidebar"] [data-testid="stCaptionContainer"] {
+    color: #A5AAC0 !important;
+}
+
+[data-testid="stSidebar"] hr {
+    border-color: rgba(255,255,255,0.12);
+}
+
+/* Headings */
+
+h1, h2, h3 {
+    color: var(--text);
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+/* Buttons */
+
+.stButton > button {
+    border: none;
+    border-radius: 10px;
+    background: var(--primary);
+    color: white;
+    font-weight: 600;
+    padding: 0.55rem 1rem;
+    transition: all 0.2s ease;
+}
+
+.stButton > button:hover {
+    background: var(--primary-dark);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(108,99,255,0.22);
+}
+
+/* Input fields */
+
+.stTextInput input,
+.stNumberInput input,
+.stTextArea textarea {
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: white;
+    color: var(--text);
+}
+
+.stSelectbox [data-baseweb="select"],
+.stMultiSelect [data-baseweb="select"] {
+    border-radius: 10px;
+}
+
+/* Cards and containers */
+
+[data-testid="stMetric"] {
+    background: var(--surface);
+    padding: 18px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: 0 3px 12px rgba(30,40,80,0.04);
+}
+
+[data-testid="stVerticalBlockBorderWrapper"] {
+    border-radius: 14px;
+}
+
+/* Tabs */
+
+.stTabs [data-baseweb="tab-list"] {
+    gap: 12px;
+}
+
+.stTabs [data-baseweb="tab"] {
+    border-radius: 8px;
+    padding: 10px 16px;
+}
+
+.stTabs [aria-selected="true"] {
+    color: var(--primary);
+}
+
+/* Dataframes */
+
+[data-testid="stDataFrame"] {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+/* Expanders */
+
+[data-testid="stExpander"] {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+}
+
+/* Dividers */
+
+hr {
+    border-color: var(--border);
+}
+
+/* Links */
+
+a {
+    color: var(--primary);
+}
+
+/* Scrollbar */
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #C8CCDA;
+    border-radius: 10px;
+}
+
+/* Responsive layout */
+
+@media (max-width: 768px) {
+    .block-container {
+        padding: 1rem;
+    }
+}

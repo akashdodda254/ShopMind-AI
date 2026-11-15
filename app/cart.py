@@ -8,12 +8,16 @@ from database.cart import (
     get_cart_total,
 )
 
+from database.orders import place_order
+
 
 def render_cart():
 
-    st.title("🛒 My Shopping Cart")
+    st.markdown("# 🛒 My Shopping Cart")
 
-    st.write("Review and manage your selected products.")
+    st.caption(
+        "Review your selected products and complete your order."
+    )
 
     current_user = st.session_state.get("current_user")
 
@@ -23,31 +27,119 @@ def render_cart():
 
     user_id = current_user["id"]
 
+    # -----------------------------------------
+    # ORDER CONFIRMATION
+    # -----------------------------------------
+
+    if st.session_state.get("order_confirmation"):
+
+        order = st.session_state.pop("order_confirmation")
+
+        with st.container(border=True):
+
+            st.success(
+                f"🎉 Order #{order['order_id']} placed successfully!"
+            )
+
+            st.markdown("### Thank you for shopping with ShopMind!")
+
+            st.metric(
+                "Order Amount",
+                f"₹{order['total_amount']:,.2f}",
+            )
+
+            st.info(
+                "Visit My Orders to view your purchase history."
+            )
+
     cart_items = get_cart(user_id)
 
-    # Cart Summary
-    total_items = sum(item["quantity"] for item in cart_items)
+    total_items = sum(
+        item["quantity"] for item in cart_items
+    )
+
     total_price = get_cart_total(user_id)
 
-    col1, col2 = st.columns(2)
+    # -----------------------------------------
+    # CART HEADER
+    # -----------------------------------------
+
+    st.markdown(
+        """
+        <div style="
+            background: linear-gradient(120deg, #5548E8, #8177FF, #38BDF8);
+            padding: 25px;
+            border-radius: 16px;
+            margin: 15px 0 25px 0;
+        ">
+            <h2 style="color:white; margin:0;">
+                Your Shopping Bag 💜
+            </h2>
+            <p style="color:rgba(255,255,255,0.9); margin:8px 0 0 0;">
+                Everything you love, ready for checkout.
+            </p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    # -----------------------------------------
+    # CART SUMMARY
+    # -----------------------------------------
+
+    col1, col2, col3 = st.columns(3)
 
     with col1:
-        st.metric("Total Items", total_items)
+        st.metric("📦 Total Items", total_items)
 
     with col2:
-        st.metric("Cart Value", f"₹{total_price:,.2f}")
+        st.metric(
+            "💰 Cart Value",
+            f"₹{total_price:,.2f}",
+        )
+
+    with col3:
+        st.metric(
+            "🛍️ Product Types",
+            len(cart_items),
+        )
 
     st.divider()
 
+    # -----------------------------------------
+    # EMPTY CART
+    # -----------------------------------------
+
     if not cart_items:
 
-        st.info(
-            "Your shopping cart is empty. "
-            "Explore products and add items to your cart."
-        )
+        with st.container(border=True):
+
+            st.markdown(
+                """
+                <div style="
+                    text-align:center;
+                    padding:35px 15px;
+                ">
+                    <div style="font-size:55px;">🛒</div>
+                    <h2 style="color:#5548E8;">
+                        Your Cart is Empty
+                    </h2>
+                    <p style="color:#7B8298;">
+                        Discover something amazing and add it
+                        to your shopping cart.
+                    </p>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+
         return
 
-    st.subheader("📦 Your Cart Items")
+    # -----------------------------------------
+    # CART PRODUCTS
+    # -----------------------------------------
+
+    st.markdown("## 📦 Your Cart Items")
 
     for product in cart_items:
 
@@ -59,13 +151,31 @@ def render_cart():
 
                 st.markdown(f"### {product['name']}")
 
-                st.write(f"**Brand:** {product['brand']}")
-                st.write(f"**Category:** {product['category']}")
-                st.write(f"**Unit Price:** ₹{product['price']:,.2f}")
-                st.write(f"**Quantity:** {product['quantity']}")
-                st.write(f"**Subtotal:** ₹{product['subtotal']:,.2f}")
+                st.caption(
+                    f"{product.get('brand', 'N/A')} · "
+                    f"{product.get('category', 'Product')}"
+                )
+
+                st.write(
+                    f"**Unit Price:** ₹{product['price']:,.2f}"
+                )
+
+                st.markdown(
+                    f"""
+                    <div style="
+                        color:#5548E8;
+                        font-size:23px;
+                        font-weight:800;
+                        margin:8px 0;
+                    ">
+                        ₹{product['subtotal']:,.2f}
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
 
                 st.caption(
+                    f"Quantity: {product['quantity']} · "
                     f"Available stock: {product['stock']}"
                 )
 
@@ -75,7 +185,10 @@ def render_cart():
                     "Quantity",
                     min_value=1,
                     max_value=max(1, product["stock"]),
-                    value=product["quantity"],
+                    value=min(
+                        product["quantity"],
+                        max(1, product["stock"]),
+                    ),
                     step=1,
                     key=f"cart_quantity_{product['id']}",
                 )
@@ -115,18 +228,90 @@ def render_cart():
                     else:
                         st.error(message)
 
+    # -----------------------------------------
+    # ORDER SUMMARY
+    # -----------------------------------------
+
     st.divider()
 
-    # Cart Total
-    st.subheader("💰 Order Summary")
+    st.markdown("## 💰 Order Summary")
 
-    st.write(f"**Total Items:** {total_items}")
-    st.write(f"**Total Amount:** ₹{total_price:,.2f}")
+    with st.container(border=True):
+
+        col1, col2 = st.columns(2)
+
+        with col1:
+            st.write("Total Product Types")
+
+        with col2:
+            st.write(f"**{len(cart_items)}**")
+
+        col1, col2 = st.columns(2)
+
+        with col1:
+            st.write("Total Items")
+
+        with col2:
+            st.write(f"**{total_items}**")
+
+        st.divider()
+
+        col1, col2 = st.columns(2)
+
+        with col1:
+            st.markdown("### Total Amount")
+
+        with col2:
+            st.markdown(
+                f"""
+                <div style="
+                    color:#5548E8;
+                    font-size:25px;
+                    font-weight:800;
+                    text-align:right;
+                ">
+                    ₹{total_price:,.2f}
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
 
     st.caption(
-        "This is an estimated cart total using ShopMind catalogue prices. "
-        "Taxes, shipping, and checkout are not included."
+        "Prices are based on the ShopMind product catalogue. "
+        "Taxes, shipping, and payment processing are not included."
     )
+
+    # -----------------------------------------
+    # CHECKOUT
+    # -----------------------------------------
+
+    st.divider()
+
+    st.markdown("## 📦 Complete Your Order")
+
+    if st.button(
+        "🛒 Place Order",
+        use_container_width=True,
+        type="primary",
+    ):
+
+        success, result = place_order(user_id)
+
+        if success:
+
+            st.session_state["order_confirmation"] = result
+
+            st.rerun()
+
+        else:
+
+            st.error(result)
+
+    # -----------------------------------------
+    # CLEAR CART
+    # -----------------------------------------
+
+    st.divider()
 
     if st.button(
         "🗑️ Clear Entire Cart",
@@ -136,4 +321,5 @@ def render_cart():
         clear_cart(user_id)
 
         st.success("Your cart has been cleared!")
+
         st.rerun()

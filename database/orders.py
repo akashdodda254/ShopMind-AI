@@ -192,3 +192,31 @@ def update_order_status(order_id, user_id, new_status):
         return True, "Order status updated."
 
     return False, "Order not found."
+def cancel_order(order_id, user_id):
+    
+    with sqlite3.connect(DB_PATH) as connection:
+
+        connection.execute("PRAGMA foreign_keys = ON")
+
+        order = connection.execute("""
+            SELECT status
+            FROM orders
+            WHERE id = ? AND user_id = ?
+        """, (order_id, user_id)).fetchone()
+
+        if not order:
+            return False, "Order not found."
+
+        if order[0] != "Placed":
+            return False, (
+                "This order can no longer be cancelled. "
+                "Only orders with Placed status can be cancelled."
+            )
+
+        connection.execute("""
+            UPDATE orders
+            SET status = 'Cancelled'
+            WHERE id = ? AND user_id = ?
+        """, (order_id, user_id))
+
+    return True, "Your order has been cancelled successfully."
